@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}— Scan Message{% endblock %}
+{% block content %}
+<div class="topbar">
+  <h1>Scan Message</h1>
+  <p>Paste a message to check if it's a relevant opportunity</p>
+</div>
+<div class="content">
+  {% if result %}
+  <div class="score-result {% if result.saved %}pass{% else %}fail{% endif %}">
+    <h3>{% if result.saved %}✅ Opportunity Detected{% else %}❌ Not an Opportunity{% endif %}</h3>
+    <p style="margin-top:6px;">Score: <strong>{{ result.score }}</strong> &nbsp;/&nbsp; Threshold: {{ result.threshold }}</p>
+    {% if result.matched %}
+    <p style="margin-top:10px;font-size:.85rem;">Matched keywords:
+      {% for kw in result.matched %}
+        <span class="badge badge-green" style="margin-left:4px;">{{ kw }}</span>
+      {% endfor %}
+    </p>
+    {% else %}
+    <p style="margin-top:10px;font-size:.85rem;color:var(--muted);">No keywords matched.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <form method="post">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Group (optional)</label>
+          <select class="form-input" name="group_id">
+            <option value="">— Select group —</option>
+            {% for g in groups %}
+            <option value="{{ g.id }}">{{ g.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sender (optional)</label>
+          <input class="form-input" name="sender" placeholder="e.g. Ahmed Khan">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message Content *</label>
+        <textarea class="form-input" name="content" placeholder="Paste the WhatsApp message here…" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">⚡ Scan Message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

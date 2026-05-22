@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}— Groups{% endblock %}
+{% block content %}
+<div class="topbar">
+  <h1>Groups</h1>
+  <p>WhatsApp communities you're monitoring</p>
+</div>
+<div class="content">
+  <div class="card" style="margin-bottom:24px;">
+    <h2 style="font-size:1rem;margin-bottom:16px;">Add New Group</h2>
+    <form method="post">
+      <input type="hidden" name="action" value="add">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Group Name *</label>
+          <input class="form-input" name="name" placeholder="e.g. Devsinc Founders Club" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input class="form-input" name="description" placeholder="e.g. Pakistan startup founders">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Add Group</button>
+    </form>
+  </div>
+
+  {% if groups %}
+  <div class="group-list">
+    {% for g in groups %}
+    <div class="group-item">
+      <div>
+        <div class="group-name">{{ g.name }}</div>
+        {% if g.description %}<div class="group-desc">{{ g.description }}</div>{% endif %}
+        <div style="font-size:.75rem;color:var(--faint);margin-top:4px;">Added {{ g.created_at[:10] }}</div>
+      </div>
+      <form method="post">
+        <input type="hidden" name="action" value="delete">
+        <input type="hidden" name="gid" value="{{ g.id }}">
+        <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this group and all its messages?')">Delete</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+    <h3>No groups yet</h3>
+    <p>Add your WhatsApp groups above to start monitoring them.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}— Opportunities{% endblock %}
+{% block content %}
+<div class="topbar">
+  <h1>Opportunities</h1>
+  <p>Messages flagged as relevant to you</p>
+</div>
+<div class="content">
+  <div class="filter-tabs">
+    <a href="/opportunities?filter=active"   class="filter-tab {% if filter == 'active'   %}active{% endif %}">Active</a>
+    <a href="/opportunities?filter=archived" class="filter-tab {% if filter == 'archived' %}active{% endif %}">Archived</a>
+    <a href="/opportunities?filter=all"      class="filter-tab {% if filter == 'all'      %}active{% endif %}">All</a>
+  </div>
+
+  {% if messages %}
+    {% for msg in messages %}
+    <div class="msg-card {% if not msg.read %}unread{% endif %}">
+      <div class="msg-meta">
+        <span class="badge badge-green">★ Score {{ msg.score }}</span>
+        {% if msg.group_name %}<span class="badge badge-teal">{{ msg.group_name }}</span>{% endif %}
+        {% if msg.sender %}<span style="font-size:.75rem;color:var(--muted);">from {{ msg.sender }}</span>{% endif %}
+        <span style="font-size:.75rem;color:var(--faint);margin-left:auto;">{{ msg.created_at[:16] }}</span>
+        {% if not msg.read %}<span class="badge badge-orange">New</span>{% endif %}
+      </div>
+      <div class="msg-content">{{ msg.content }}</div>
+      <div class="msg-actions">
+        {% if not msg.read %}
+        <form method="post" action="/messages/read/{{ msg.id }}">
+          <button class="btn btn-ghost btn-sm">Mark Read</button>
+        </form>
+        {% endif %}
+        {% if not msg.archived %}
+        <form method="post" action="/messages/archive/{{ msg.id }}">
+          <button class="btn btn-ghost btn-sm">Archive</button>
+        </form>
+        {% endif %}
+        <form method="post" action="/messages/delete/{{ msg.id }}" onsubmit="return confirm('Delete this message?')">
+          <button class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <h3>No opportunities here</h3>
+    <p>Scan some messages to find opportunities matching your keywords.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

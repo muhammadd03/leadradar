@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}— Dashboard{% endblock %}
+{% block content %}
+<div class="topbar">
+  <h1>Dashboard</h1>
+  <p>Your opportunity radar at a glance</p>
+</div>
+<div class="content">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-val">{{ stats.groups }}</div>
+      <div class="stat-label">Groups Monitored</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">{{ stats.keywords }}</div>
+      <div class="stat-label">Active Keywords</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">{{ stats.opportunities }}</div>
+      <div class="stat-label">Opportunities Found</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--warn);">{{ stats.unread }}</div>
+      <div class="stat-label">Unread Alerts</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 style="font-size:1rem;">Recent Opportunities</h2>
+      <a href="/opportunities" class="btn btn-ghost btn-sm">View All →</a>
+    </div>
+    {% if recent %}
+      {% for msg in recent %}
+      <div class="msg-card {% if not msg.read %}unread{% endif %}">
+        <div class="msg-meta">
+          <span class="badge badge-green">★ {{ msg.score }}</span>
+          {% if msg.group_name %}<span class="badge badge-teal">{{ msg.group_name }}</span>{% endif %}
+          {% if not msg.read %}<span class="badge badge-orange">New</span>{% endif %}
+          <span style="margin-left:auto;font-size:.75rem;color:var(--faint);">{{ msg.created_at[:16] }}</span>
+        </div>
+        <div class="msg-content">{{ msg.content[:200] }}{% if msg.content|length > 200 %}…{% endif %}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="empty-state" style="padding:30px;">
+      <p>No opportunities yet. <a href="/scan" style="color:var(--accent);">Scan a message</a> to get started.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
